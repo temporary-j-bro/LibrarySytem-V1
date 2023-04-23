@@ -44,7 +44,19 @@ public class BookRequests {
                 .when()
                     .post("/books/register-form")
                 .then().log().all()
-                    .statusCode(HttpStatus.CREATED.value())
+                    .statusCode(HttpStatus.FOUND.value())
+                    .extract();
+    }
+
+    public static ExtractableResponse<Response> 책_등록하기_페이지_리다이렉션(String jsessionId) {
+        return RestAssured
+                .given().log().all()
+                    .contentType(MediaType.TEXT_HTML_VALUE)
+                    .cookie("JSESSIONID", jsessionId)
+                .when()
+                    .get("/books/register-form")
+                .then().log().all()
+                    .statusCode(HttpStatus.OK.value())
                     .extract();
     }
 }

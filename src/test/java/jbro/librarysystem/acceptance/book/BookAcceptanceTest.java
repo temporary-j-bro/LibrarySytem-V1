@@ -1,6 +1,5 @@
 package jbro.librarysystem.acceptance.book;
 
-import io.restassured.builder.MultiPartSpecBuilder;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import jbro.librarysystem.acceptance.AcceptanceTest;
@@ -8,15 +7,12 @@ import jbro.librarysystem.book.BookRegisterForm;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class BookAcceptanceTest extends AcceptanceTest {
 
@@ -78,7 +74,7 @@ class BookAcceptanceTest extends AcceptanceTest {
     /**
      * Given registerForm 형식에 맞게
      * When  책 등록을 요청하면
-     * Then  책이 등록된다
+     * Then  책이 등록되었다는 메세지를 포함하여, 등록하기 페이지를 응답한다
      */
     @Test
     void register() throws IOException {
@@ -86,9 +82,17 @@ class BookAcceptanceTest extends AcceptanceTest {
         BookRegisterForm form = new BookRegisterForm("Title 1", "Author 1", "ISBN 1", new MockMultipartFile("Image 1.jpg", "Mock Image 1".getBytes()));
 
         //When
-        ExtractableResponse<Response> response = BookRequests.책_등록하기(form);
+        String jsessionId = BookRequests.책_등록하기(form).response().getCookie("JSESSIONID");
 
         //Then
-        assertEquals(HttpStatus.CREATED.value(), response.statusCode());
+        ExtractableResponse<Response> response = BookRequests.책_등록하기_페이지_리다이렉션(jsessionId);
+        책_등록_성공시_책_등록하기_페이지_요구사항(response);
+    }
+
+    private void 책_등록_성공시_책_등록하기_페이지_요구사항(ExtractableResponse<Response> response) {
+        Document document = Jsoup.parse(response.asString());
+
+        assertThat(document.select("#alert-success").text()).isEqualTo("저장되었습니다");
+        책_등록하기_페이지_요구사항(response);
     }
 }

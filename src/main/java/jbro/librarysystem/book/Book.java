@@ -2,24 +2,27 @@ package jbro.librarysystem.book;
 
 import org.springframework.web.multipart.MultipartFile;
 
-public class BookRegisterForm {
+public class Book {
+
+    private Long id;
     private String title;
     private String author;
     private String isbn;
     private MultipartFile image;
 
-    public BookRegisterForm() {
-    }
-
-    public BookRegisterForm(String title, String author, String isbn, MultipartFile image) {
+    public Book(String title, String author, String isbn, MultipartFile image) {
         this.title = title;
         this.author = author;
         this.isbn = isbn;
         this.image = image;
     }
 
-    public Book toBook() {
-        return new Book(title, author, isbn, image);
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTitle() {
