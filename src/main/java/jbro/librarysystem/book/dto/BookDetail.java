@@ -1,18 +1,26 @@
-package jbro.librarysystem.book;
+package jbro.librarysystem.book.dto;
 
-public class Book {
+import jbro.librarysystem.book.Book;
 
+import java.util.Base64;
+
+public class BookDetail {
     private Long id;
     private String title;
     private String author;
     private String isbn;
     private byte[] image;
 
-    public Book(String title, String author, String isbn, byte[] image) {
+    public BookDetail(Long id, String title, String author, String isbn, byte[] image) {
+        this.id = id;
         this.title = title;
         this.author = author;
         this.isbn = isbn;
         this.image = image;
+    }
+
+    public static BookDetail of(Book book) {
+        return new BookDetail(book.getId(), book.getTitle(), book.getAuthor(), book.getIsbn(), book.getImage());
     }
 
     public Long getId() {
@@ -53,5 +61,10 @@ public class Book {
 
     public void setImage(byte[] image) {
         this.image = image;
+    }
+
+    public String getBase64Image() {
+        String base64Image = Base64.getEncoder().encodeToString(image);
+        return "data:image/png;base64," + base64Image;
     }
 }

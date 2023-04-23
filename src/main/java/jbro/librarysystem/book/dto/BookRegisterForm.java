@@ -1,6 +1,9 @@
-package jbro.librarysystem.book;
+package jbro.librarysystem.book.dto;
 
+import jbro.librarysystem.book.Book;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 public class BookRegisterForm {
     private String title;
@@ -18,8 +21,8 @@ public class BookRegisterForm {
         this.image = image;
     }
 
-    public Book toBook() {
-        return new Book(title, author, isbn, image);
+    public Book toBook() throws IOException {
+        return new Book(title, author, isbn, image.getBytes());
     }
 
     public String getTitle() {
