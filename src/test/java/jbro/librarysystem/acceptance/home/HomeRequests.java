@@ -11,11 +11,11 @@ public class HomeRequests {
     public static ExtractableResponse<Response> 홈_페이지_이동() {
         return RestAssured
                 .given().log().all()
-                .contentType(MediaType.TEXT_HTML_VALUE)
+                    .contentType(MediaType.TEXT_HTML_VALUE)
                 .when()
-                .get("/")
+                    .get("/")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract();
+                    .statusCode(HttpStatus.OK.value())
+                    .extract();
     }
 }
