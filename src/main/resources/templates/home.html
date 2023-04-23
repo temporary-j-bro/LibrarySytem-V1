@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html th:replace="~{template/basic-layout :: layout(~{::h1}, ~{::section})}"
+      xmlns:th="http://www.thymeleaf.org">
+
+<h1 class="section-topic">홈</h1>
+
+<section>
+    <div class="col mt-5 mb-5">
+        <div class="search-container">
+            <form th:action="@{/books}" method="GET" id="search-box">
+                <input type="text" name="keyword" class="search-input w-50" placeholder="책 정보를 입력하세요...">
+                <button type="submit" class="search-button btn btn-primary">검색</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="col mt-5 mb-5">
+        <div class="book-management-container">
+            <div id="book-management-router">
+                <button type="button" class="btn btn-primary btn-lg" onclick="location.href='/books/management'">책 관리하기</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+</html>
