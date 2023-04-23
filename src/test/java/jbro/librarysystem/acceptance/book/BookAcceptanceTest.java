@@ -37,4 +37,33 @@ class BookAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(document.select("section").select("#delete-form").select("button").attr("onclick")).isEqualTo("location.href='/books/delete-form'")
         );
     }
+
+    /**
+     * When  책 등록하기 페이지을 요청하면
+     * Then  topic 은 책 등록하기이고,
+     *  And  폼에는 제목, 글쓴이, ISBN, 대표 이미지를 입력 할 수 있다.
+     */
+    @Test
+    void registerForm() {
+        ExtractableResponse<Response> response = BookRequests.책_등록하기_페이지_이동();
+
+        책_등록하기_페이지_요구사항(response);
+    }
+
+    private void 책_등록하기_페이지_요구사항(ExtractableResponse<Response> response) {
+        Document document = Jsoup.parse(response.asString());
+
+        assertAll(
+                //topic 검증: 책 등록하기
+                () -> assertThat(document.select("h1").select(".section-topic").text()).isEqualTo("책 등록하기"),
+
+                //section 검증: 폼에는 제목, 글쓴이, ISBN, 대표 이미지를 입력하고, 제출한다. 대표 이미지는 파일로 입력한다
+                () -> assertThat(document.select("section").select("input#title").attr("type")).isEqualTo("text"),
+                () -> assertThat(document.select("section").select("input#author").attr("type")).isEqualTo("text"),
+                () -> assertThat(document.select("section").select("input#isbn").attr("type")).isEqualTo("text"),
+                () -> assertThat(document.select("section").select("input#image").attr("type")).isEqualTo("file"),
+
+                () -> assertThat(document.select("section").select("button").attr("type")).isEqualTo("submit")
+        );
+    }
 }

@@ -18,4 +18,15 @@ public class BookRequests {
                     .statusCode(HttpStatus.OK.value())
                     .extract();
     }
+
+    public static ExtractableResponse<Response> 책_등록하기_페이지_이동() {
+        return RestAssured
+                .given().log().all()
+                    .contentType(MediaType.TEXT_HTML_VALUE)
+                .when()
+                    .get("/books/register-form")
+                .then().log().all()
+                    .statusCode(HttpStatus.OK.value())
+                    .extract();
+    }
 }
