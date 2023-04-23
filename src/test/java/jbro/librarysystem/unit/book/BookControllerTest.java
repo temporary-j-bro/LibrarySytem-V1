@@ -23,4 +23,11 @@ public class BookControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("/books/managementRouter"));
     }
+
+    @Test
+    public void bookRegisterForm() throws Exception {
+        mockMvc.perform(get("/books/register-form"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("/books/registerForm"));
+    }
 }
