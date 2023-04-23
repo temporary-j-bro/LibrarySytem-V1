@@ -8,6 +8,16 @@ public class BookRegisterForm {
     private String isbn;
     private MultipartFile image;
 
+    public BookRegisterForm() {
+    }
+
+    public BookRegisterForm(String title, String author, String isbn, MultipartFile image) {
+        this.title = title;
+        this.author = author;
+        this.isbn = isbn;
+        this.image = image;
+    }
+
     public String getTitle() {
         return title;
     }

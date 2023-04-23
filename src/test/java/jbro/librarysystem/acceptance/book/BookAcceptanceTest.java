@@ -1,14 +1,22 @@
 package jbro.librarysystem.acceptance.book;
 
+import io.restassured.builder.MultiPartSpecBuilder;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import jbro.librarysystem.acceptance.AcceptanceTest;
+import jbro.librarysystem.book.BookRegisterForm;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class BookAcceptanceTest extends AcceptanceTest {
 
@@ -65,5 +73,22 @@ class BookAcceptanceTest extends AcceptanceTest {
 
                 () -> assertThat(document.select("section").select("button").attr("type")).isEqualTo("submit")
         );
+    }
+
+    /**
+     * Given registerForm 형식에 맞게
+     * When  책 등록을 요청하면
+     * Then  책이 등록된다
+     */
+    @Test
+    void register() throws IOException {
+        //Given
+        BookRegisterForm form = new BookRegisterForm("Title 1", "Author 1", "ISBN 1", new MockMultipartFile("Image 1.jpg", "Mock Image 1".getBytes()));
+
+        //When
+        ExtractableResponse<Response> response = BookRequests.책_등록하기(form);
+
+        //Then
+        assertEquals(HttpStatus.CREATED.value(), response.statusCode());
     }
 }

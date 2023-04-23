@@ -3,8 +3,11 @@ package jbro.librarysystem.acceptance.book;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import jbro.librarysystem.book.BookRegisterForm;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+
+import java.io.IOException;
 
 public class BookRequests {
 
@@ -27,6 +30,21 @@ public class BookRequests {
                     .get("/books/register-form")
                 .then().log().all()
                     .statusCode(HttpStatus.OK.value())
+                    .extract();
+    }
+
+    public static ExtractableResponse<Response> 책_등록하기(BookRegisterForm form) throws IOException {
+        return RestAssured
+                .given().log().all()
+                    .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+                    .formParam("title", form.getTitle())
+                    .formParam("author", form.getAuthor())
+                    .formParam("isbn", form.getIsbn())
+                    .multiPart("image", form.getImage().getOriginalFilename(), form.getImage().getBytes(), form.getImage().getContentType())
+                .when()
+                    .post("/books/register-form")
+                .then().log().all()
+                    .statusCode(HttpStatus.CREATED.value())
                     .extract();
     }
 }
