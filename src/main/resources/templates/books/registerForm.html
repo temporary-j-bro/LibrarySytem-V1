@@ -5,7 +5,7 @@
 <h1 class="section-topic">책 등록하기</h1>
 
 <section>
-    <div id="alert-success" th:if="${successMessage}" class="alert" th:text="${successMessage}"></div>
+    <div id="alert-success" th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
 
     <form th:action method="POST" th:object="${registerForm}" id="register-form" , enctype="multipart/form-data">
         <div class="d-flex flex-column align-items-center">
