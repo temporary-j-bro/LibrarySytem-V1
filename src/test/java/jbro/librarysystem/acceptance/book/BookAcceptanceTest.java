@@ -3,7 +3,7 @@ package jbro.librarysystem.acceptance.book;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import jbro.librarysystem.acceptance.AcceptanceTest;
-import jbro.librarysystem.book.BookRegisterForm;
+import jbro.librarysystem.book.dto.BookRegisterForm;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.Test;
@@ -94,5 +94,40 @@ class BookAcceptanceTest extends AcceptanceTest {
 
         assertThat(document.select("#alert-success").text()).isEqualTo("저장되었습니다");
         책_등록하기_페이지_요구사항(response);
+    }
+
+    /**
+     * Given 책을 저장하고
+     * When  저장된 책의 상세페이지를 요청하면
+     * Then  토픽은 상세 정보이고
+     *  And  책의 상세 정보 형식의 정보를 담은 페이지를 응답한다
+     */
+    @Test
+    void getBookDetail() throws IOException {
+        //Given
+        BookRegisterForm form = new BookRegisterForm("Title 1", "Author 1", "ISBN 1", new MockMultipartFile("Image 1.jpg", "Mock Image 1".getBytes()));
+        Long savedId = Long.valueOf(BookRequests.책_등록하기(form).response().getHeader("X-Saved-Id"));
+
+        //When
+        ExtractableResponse<Response> response = BookRequests.책_상세_페이지_이동(savedId);
+
+        //Then
+        책_상세_페이지_요구사항(response);
+    }
+
+    private static void 책_상세_페이지_요구사항(ExtractableResponse<Response> response) {
+        Document document = Jsoup.parse(response.asString());
+
+        assertAll(
+                //topic 검증: 상세 정보
+                () -> assertThat(document.select("h1").select(".section-topic").text()).isEqualTo("상세 정보"),
+
+                //section 검증: 상세 페이지에는 Id, 제목, 글쓴이, ISBN, 대표 이미지의 정보가 존재한다
+                () -> assertThat(document.select("section").select("input#id").attr("type")).isEqualTo("number"),
+                () -> assertThat(document.select("section").select("input#title").attr("type")).isEqualTo("text"),
+                () -> assertThat(document.select("section").select("input#author").attr("type")).isEqualTo("text"),
+                () -> assertThat(document.select("section").select("input#isbn").attr("type")).isEqualTo("text"),
+                () -> assertThat(document.select("section").select("img#image").attr("type")).isEqualTo("image")
+        );
     }
 }
