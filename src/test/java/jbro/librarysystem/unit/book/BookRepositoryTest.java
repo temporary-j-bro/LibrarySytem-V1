@@ -83,4 +83,30 @@ class BookRepositoryTest {
         //Then
         assertThat(books).containsOnly(dummyBook6, dummyBook7, dummyBook8);
     }
+
+    @Test
+    void pagination_findByKeyword() {
+        //Given
+        bookRepository.save(dummyBook1);
+        bookRepository.save(dummyBook2);
+        bookRepository.save(dummyBook3);
+        bookRepository.save(dummyBook4);
+        bookRepository.save(dummyBook5);
+        bookRepository.save(dummyBook6);
+        bookRepository.save(dummyBook7);
+        bookRepository.save(dummyBook8);
+
+        bookRepository.save(dummyBook8);
+        bookRepository.save(dummyBook8);
+        bookRepository.save(dummyBook8);
+        bookRepository.save(dummyBook8);
+        bookRepository.save(dummyBook8);
+
+        //When
+        String keyword = "title";
+        List<Book> books = bookRepository.findByKeyword(keyword);
+
+        //Then
+        assertThat(books).hasSize(10);
+    }
 }

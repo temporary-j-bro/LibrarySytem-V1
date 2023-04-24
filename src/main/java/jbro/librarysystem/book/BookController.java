@@ -58,11 +58,24 @@ public class BookController {
     }
 
     @GetMapping
-    public String getList(@RequestParam String keyword, Model model) {
-        List<Book> books = bookRepository.findByKeyword(keyword);
+    public String getList(@RequestParam(value = "page", defaultValue = "0") int page,
+                          @RequestParam(value = "size", defaultValue = "10") int size,
+                          @RequestParam String keyword,
+                          Model model
+    ) {
+        int offset = page * size;
+        List<Book> books = bookRepository.findByKeyword(keyword, offset, size);
 
         List<BookPreviewInfo> bookPreviewInfos = BookPreviewInfo.of(books);
         model.addAttribute("bookPreviewInfos", bookPreviewInfos);
+
+        model.addAttribute("currentPage", page);
+        model.addAttribute("keyword", keyword);
+
+        int totalResults = bookRepository.countByKeyword(keyword);
+        int totalPages = (int) Math.ceil((double) totalResults / size);
+        model.addAttribute("size", size);
+        model.addAttribute("totalPages", totalPages);
 
         return "/books/bookList";
     }

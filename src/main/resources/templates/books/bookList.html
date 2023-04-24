@@ -19,13 +19,31 @@
         </thead>
         <tbody>
         <tr th:each="bookPreviewInfo, bookPreviewInfoStat : ${bookPreviewInfos}">
-            <th th:text="${bookPreviewInfoStat.count}">1</th>
+            <th th:text="${bookPreviewInfoStat.count + size * currentPage}">1</th>
             <td><a th:href="@{/books/{bookId}(bookId=${bookPreviewInfo.id})}" th:text="${bookPreviewInfo.title}">제목</a></td>
             <td th:text="${bookPreviewInfo.author}">글쓴이</td>
             <td><img th:src="*{bookPreviewInfo.getBase64Image()}" width="100" height="100" alt="대표 이미지" readonly></td>
         </tr>
         </tbody>
     </table>
+
+    <nav aria-label="Page navigation" th:if="${not #lists.isEmpty(bookPreviewInfos)}">
+        <ul class="pagination">
+            <li class="page-item" th:if="${currentPage > 0}">
+                <a class="page-link" th:href="@{/books(keyword=${keyword}, page=${currentPage - 1})}" aria-label="Previous">
+                    <span aria-hidden="true">&lt;</span>
+                </a>
+            </li>
+            <li class="page-item" th:each="page : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${page == currentPage} ? 'active' : ''">
+                <a class="page-link" th:href="@{/books(keyword=${keyword}, page=${page})}" th:text="${page + 1}">1</a>
+            </li>
+            <li class="page-item" th:if="${currentPage < totalPages - 1}">
+                <a class="page-link" th:href="@{/books(keyword=${keyword}, page=${currentPage + 1})}" aria-label="Next">
+                    <span aria-hidden="true">&gt;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
 </section>
 
 </html>

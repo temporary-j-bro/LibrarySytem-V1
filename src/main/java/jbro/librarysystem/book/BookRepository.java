@@ -31,8 +31,23 @@ public class BookRepository {
     }
 
     public List<Book> findByKeyword(String keyword) {
+        int defaultOffset = 0;
+        int defaultSize = 10;
+
+        return findByKeyword(keyword, defaultOffset, defaultSize);
+    }
+
+    public List<Book> findByKeyword(String keyword, int offset, int size) {
         return repository.values().stream()
                 .filter(book -> book.contains(keyword))
+                .skip(offset)
+                .limit(size)
                 .collect(Collectors.toList());
+    }
+
+    public int countByKeyword(String keyword) {
+        return Math.toIntExact(repository.values().stream()
+                .filter(book -> book.contains(keyword))
+                .count());
     }
 }
