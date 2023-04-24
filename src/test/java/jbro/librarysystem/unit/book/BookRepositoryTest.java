@@ -31,6 +31,8 @@ class BookRepositoryTest {
 
     @BeforeEach
     void setUp() throws IOException {
+        bookRepository.cleanUp();
+
         dummyBook1 = new Book("Title 1", "Author 1", "ISBN 1", new MockMultipartFile("Image 1.jpg", "Mock Image 1".getBytes()).getBytes());
         dummyBook2 = new Book("Title 2", "Author 2", "ISBN 2", new MockMultipartFile("Image 2.jpg", "Mock Image 2".getBytes()).getBytes());
         dummyBook3 = new Book("Title 3", "Author 3", "ISBN 3", new MockMultipartFile("Image 3.jpg", "Mock Image 3".getBytes()).getBytes());
