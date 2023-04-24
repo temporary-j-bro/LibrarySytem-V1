@@ -31,6 +31,8 @@ class BookRepositoryTest {
 
     @BeforeEach
     void setUp() throws IOException {
+        bookRepository.cleanUp();
+
         dummyBook1 = new Book("Title 1", "Author 1", "ISBN 1", new MockMultipartFile("Image 1.jpg", "Mock Image 1".getBytes()).getBytes());
         dummyBook2 = new Book("Title 2", "Author 2", "ISBN 2", new MockMultipartFile("Image 2.jpg", "Mock Image 2".getBytes()).getBytes());
         dummyBook3 = new Book("Title 3", "Author 3", "ISBN 3", new MockMultipartFile("Image 3.jpg", "Mock Image 3".getBytes()).getBytes());
@@ -80,5 +82,31 @@ class BookRepositoryTest {
 
         //Then
         assertThat(books).containsOnly(dummyBook6, dummyBook7, dummyBook8);
+    }
+
+    @Test
+    void pagination_findByKeyword() {
+        //Given
+        bookRepository.save(dummyBook1);
+        bookRepository.save(dummyBook2);
+        bookRepository.save(dummyBook3);
+        bookRepository.save(dummyBook4);
+        bookRepository.save(dummyBook5);
+        bookRepository.save(dummyBook6);
+        bookRepository.save(dummyBook7);
+        bookRepository.save(dummyBook8);
+
+        bookRepository.save(dummyBook8);
+        bookRepository.save(dummyBook8);
+        bookRepository.save(dummyBook8);
+        bookRepository.save(dummyBook8);
+        bookRepository.save(dummyBook8);
+
+        //When
+        String keyword = "title";
+        List<Book> books = bookRepository.findByKeyword(keyword);
+
+        //Then
+        assertThat(books).hasSize(10);
     }
 }

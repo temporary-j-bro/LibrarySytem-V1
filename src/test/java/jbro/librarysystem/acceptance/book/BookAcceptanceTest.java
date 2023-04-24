@@ -6,10 +6,13 @@ import jbro.librarysystem.acceptance.AcceptanceTest;
 import jbro.librarysystem.book.dto.BookRegisterForm;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
 
 import java.io.IOException;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -128,6 +131,51 @@ class BookAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(document.select("section").select("input#author").attr("type")).isEqualTo("text"),
                 () -> assertThat(document.select("section").select("input#isbn").attr("type")).isEqualTo("text"),
                 () -> assertThat(document.select("section").select("img#image").attr("type")).isEqualTo("image")
+        );
+    }
+
+    /**
+     * Given 책들을 저장하고
+     * When  검색어로 검색 요청하면
+     * Then  토픽은 검색 결과이고
+     *  And  검색 결과를 담은 페이지를 응답한다
+     */
+    @Test
+    void search() throws IOException {
+        //Given
+        BookRequests.책_등록하기(new BookRegisterForm("Title 1", "Author 1", "ISBN 1", new MockMultipartFile("Image 1.jpg", "Mock Image 1".getBytes())));
+        BookRequests.책_등록하기(new BookRegisterForm("Title 2", "Author 2", "ISBN 2", new MockMultipartFile("Image 2.jpg", "Mock Image 2".getBytes())));
+        BookRequests.책_등록하기(new BookRegisterForm("Title 3", "Author 3", "ISBN 3", new MockMultipartFile("Image 3.jpg", "Mock Image 3".getBytes())));
+        BookRequests.책_등록하기(new BookRegisterForm("Title 4", "Author 4", "ISBN 4", new MockMultipartFile("Image 4.jpg", "Mock Image 4".getBytes())));
+        BookRequests.책_등록하기(new BookRegisterForm("Special Title 1", "Author 1", "ISBN 5", new MockMultipartFile("Image 5.jpg", "Mock Image 5".getBytes())));
+        BookRequests.책_등록하기(new BookRegisterForm("Special Title 2", "Author 1", "ISBN 6", new MockMultipartFile("Image 6.jpg", "Mock Image 6".getBytes())));
+
+        //When
+        ExtractableResponse<Response> response = BookRequests.책_검색하기("spec");
+
+        //Then
+        Document document = Jsoup.parse(response.asString());
+
+        assertAll(
+                //topic 검증: 검색 결과
+                () -> assertThat(document.select("h1").select(".section-topic").text()).isEqualTo("검색 결과"),
+
+                //section 검증: 검색 결과 페이지에는 조건에 맞는 결과가 제목, 글쓴이, 대표 이미지의 정보가 표시된다
+                () -> {
+                    Elements rows = document.select("table.table tbody tr");
+                    assertThat(rows.size()).isEqualTo(2);
+
+                    Set<String> expectedTitles = Set.of("Special Title 1", "Special Title 2");
+                    Set<String> expectedAuthors = Set.of("Author 1");
+                    for (Element row : rows) {
+                        String title = row.select("td").get(0).text();
+                        String author = row.select("td").get(1).text();
+
+                        assertThat(expectedTitles).contains(title);
+                        assertThat(expectedAuthors).contains(author);
+                        assertThat(row.select("td img").attr("src")).isNotEmpty();
+                    }
+                }
         );
     }
 }

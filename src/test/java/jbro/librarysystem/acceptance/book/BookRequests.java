@@ -70,4 +70,16 @@ public class BookRequests {
                     .statusCode(HttpStatus.OK.value())
                     .extract();
     }
+
+    public static ExtractableResponse<Response> 책_검색하기(String keyword) {
+        return RestAssured
+                .given().log().all()
+                    .contentType(MediaType.TEXT_HTML_VALUE)
+                    .queryParam("keyword", keyword)
+                .when()
+                    .get("/books")
+                .then().log().all()
+                    .statusCode(HttpStatus.OK.value())
+                    .extract();
+    }
 }

@@ -1,7 +1,11 @@
 package jbro.librarysystem.book;
 
 import jbro.librarysystem.book.dto.BookDetail;
+import jbro.librarysystem.book.dto.BookPreviewInfo;
 import jbro.librarysystem.book.dto.BookRegisterForm;
+import jbro.librarysystem.infra.pagination.Page;
+import jbro.librarysystem.infra.pagination.Pageable;
+import jbro.librarysystem.infra.pagination.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,10 +14,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 @Controller
 @RequestMapping("/books")
@@ -52,5 +58,20 @@ public class BookController {
         model.addAttribute("bookDetail", bookDetail);
 
         return "/books/bookDetail";
+    }
+
+    @GetMapping
+    public String getList(@PageableDefault(size = 10) Pageable pageable,
+                          @RequestParam String keyword,
+                          Model model
+    ) {
+        Page<Book> bookPage = bookRepository.findByKeyword(keyword, pageable);
+
+        List<BookPreviewInfo> bookPreviewInfos = BookPreviewInfo.of(bookPage.getContent());
+        model.addAttribute("bookPreviewInfos", bookPreviewInfos);
+
+        model.addAttribute("bookPage", bookPage);
+        model.addAttribute("keyword", keyword);
+        return "/books/bookList";
     }
 }

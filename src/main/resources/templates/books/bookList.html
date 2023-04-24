@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html th:replace="~{template/basic-layout :: layout(~{::h1}, ~{::section})}"
+      xmlns:th="http://www.thymeleaf.org">
+
+<h1 class="section-topic">검색 결과</h1>
+
+<section>
+    <p th:if="${#lists.isEmpty(bookPreviewInfos)}">검색 결과가 없습니다</p>
+
+    <table class="table" th:if="${not #lists.isEmpty(bookPreviewInfos)}">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">책 제목</th>
+            <th scope="col">글쓴이</th>
+            <th scope="col">대표 이미지</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="bookPreviewInfo, bookPreviewInfoStat : ${bookPreviewInfos}">
+            <th th:text="${bookPreviewInfoStat.count + bookPage.getPageable().getOffset()}">1</th>
+            <td><a th:href="@{/books/{bookId}(bookId=${bookPreviewInfo.id})}" th:text="${bookPreviewInfo.title}">제목</a></td>
+            <td th:text="${bookPreviewInfo.author}">글쓴이</td>
+            <td><img th:src="*{bookPreviewInfo.getBase64Image()}" width="100" height="100" alt="대표 이미지" readonly></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <nav aria-label="Page navigation" th:if="${not #lists.isEmpty(bookPreviewInfos)}">
+        <ul class="pagination d-flex justify-content-center">
+            <li id="previous-btn" class="page-item" th:if="${bookPage.getPageNumber() > 0}">
+                <a class="page-link" th:href="@{/books(keyword=${keyword}, page=${bookPage.getPageNumber() - 1})}" aria-label="Previous">
+                    <span aria-hidden="true">&lt;</span>
+                </a>
+            </li>
+            <li id="page-btn" class="page-item"
+                th:each="page : ${#numbers.sequence(bookPage.getPageNumber() - (bookPage.getPageNumber() % 10), bookPage.getPageNumber() - (bookPage.getPageNumber() % 10) + 9)}"
+                th:if="${page >= 0 and page < bookPage.getTotalPages()}"
+                th:classappend="${page == bookPage.getPageNumber()} ? 'active' : ''">
+                <a class="page-link" th:href="@{/books(keyword=${keyword}, page=${page})}" th:text="${page + 1}">1</a>
+            </li>
+            <li id="next-btn" class="page-item" th:if="${bookPage.getPageNumber() < bookPage.getTotalPages() - 1}">
+                <a class="page-link" th:href="@{/books(keyword=${keyword}, page=${bookPage.getPageNumber() + 1})}" aria-label="Next">
+                    <span aria-hidden="true">&gt;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</section>
+
+</html>
