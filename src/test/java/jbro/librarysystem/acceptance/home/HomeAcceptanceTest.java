@@ -15,7 +15,7 @@ class HomeAcceptanceTest extends AcceptanceTest {
     /**
      * When  홈 페이지를 요청하면
      * Then  topic 은 홈이고,
-     * And  검색창, 책 관리하기 라우터가 존재한다
+     *  And  검색창, 책 관리하기 라우터가 존재한다
      */
     @Test
     void home() {

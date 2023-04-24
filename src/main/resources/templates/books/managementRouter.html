@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html th:replace="~{template/basic-layout :: layout(~{::h1}, ~{::section})}"
+      xmlns:th="http://www.thymeleaf.org">
+
+<h1 class="section-topic">책 관리하기</h1>
+
+<section>
+    <div class="col mt-5 mb-5">
+        <div id="register-form">
+            <button type="button" class="btn btn-primary btn-lg" onclick="location.href='/books/register-form'">등록하기</button>
+        </div>
+    </div>
+
+    <div class="col mt-5 mb-5">
+        <div id="edit-form">
+            <button type="button" class="btn btn-primary btn-lg" onclick="location.href='/books/edit-form'">수정하기</button>
+        </div>
+    </div>
+
+    <div class="col mt-5 mb-5">
+        <div id="delete-form">
+            <button type="button" class="btn btn-primary btn-lg" onclick="location.href='/books/delete-form'">삭제하기</button>
+        </div>
+    </div>
+</section>
+
+</html>

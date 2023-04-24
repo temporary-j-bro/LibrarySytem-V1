@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html th:replace="~{template/basic-layout :: layout(~{::h1}, ~{::section})}"
+      xmlns:th="http://www.thymeleaf.org">
+
+<h1 class="section-topic">책 등록하기</h1>
+
+<section>
+    <div id="alert-success" th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+
+    <form th:action method="POST" th:object="${registerForm}" id="register-form" , enctype="multipart/form-data">
+        <div class="d-flex flex-column align-items-center">
+            <div class="col mt-5 mb-5">
+                <label for="title">제목</label>
+                <input type="text" id="title" th:field="*{title}" class="form-control">
+            </div>
+
+            <div class="col mt-5 mb-5">
+                <label for="author">글쓴이</label>
+                <input type="text" id="author" th:field="*{author}" class="form-control">
+            </div>
+
+            <div class="col mt-5 mb-5">
+                <label for="isbn">ISBN</label>
+                <input type="text" id="isbn" th:field="*{isbn}" class="form-control">
+            </div>
+
+            <div class="col mt-5 mb-5">
+                <label for="image">대표 이미지</label>
+                <input type="file" id="image" accept="image/*" th:field="*{image}" class="form-control">
+            </div>
+
+            <button type="submit" class="register-button btn btn-primary">등록</button>
+        </div>
+    </form>
+</section>
+
+</html>

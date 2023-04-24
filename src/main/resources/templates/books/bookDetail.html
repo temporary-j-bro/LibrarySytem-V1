@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html th:replace="~{template/basic-layout :: layout(~{::h1}, ~{::section})}"
+      xmlns:th="http://www.thymeleaf.org">
+
+<h1 class="section-topic">상세 정보</h1>
+
+<section>
+    <div class="d-flex flex-column align-items-center">
+
+        <div th:object="${bookDetail}">
+            <div class="col mt-5 mb-5">
+                <div>
+                    <label for="id">id</label>
+                    <input type="number" id="id" class="form-control" value="1" th:value="*{id}" readonly>
+                </div>
+            </div>
+            <div class="col mt-5 mb-5">
+                <div>
+                    <label for="title">제목</label>
+                    <input type="text" id="title" class="form-control" value="제목 1" th:value="*{title}" readonly>
+                </div>
+            </div>
+            <div class="col mt-5 mb-5">
+                <div>
+                    <label for="author">글쓴이</label>
+                    <input type="text" id="author" class="form-control" value="글쓴이 1" th:value="*{author}" readonly>
+                </div>
+            </div>
+            <div class="col mt-5 mb-5">
+                <div>
+                    <label for="isbn">ISBN</label>
+                    <input type="text" id="isbn" class="form-control" value="ISBN 1" th:value="*{isbn}" readonly>
+                </div>
+            </div>
+            <div class="col mt-5 mb-5">
+                <div>
+                    <label for="image">대표 이미지</label>
+                    <img type="image" id="image" class="form-control" th:src="*{getBase64Image()}" width="100" height="100" readonly>
+                </div>
+            </div>
+        </div>
+</section>
+
+</html>
