@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html th:replace="~{template/basic-layout :: layout(~{::h1}, ~{::section})}"
+      xmlns:th="http://www.thymeleaf.org">
+
+<h1 class="section-topic">검색 결과</h1>
+
+<section>
+    <p th:if="${#lists.isEmpty(bookPreviewInfos)}">검색 결과가 없습니다</p>
+
+    <table class="table" th:if="${not #lists.isEmpty(bookPreviewInfos)}">
+
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">책 제목</th>
+            <th scope="col">글쓴이</th>
+            <th scope="col">대표 이미지</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="bookPreviewInfo, bookPreviewInfoStat : ${bookPreviewInfos}">
+            <th th:text="${bookPreviewInfoStat.count}">1</th>
+            <td><a th:href="@{/books/{bookId}(bookId=${bookPreviewInfo.id})}" th:text="${bookPreviewInfo.title}">제목</a></td>
+            <td th:text="${bookPreviewInfo.author}">글쓴이</td>
+            <td><img th:src="*{bookPreviewInfo.getBase64Image()}" width="100" height="100" alt="대표 이미지" readonly></td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+
+</html>

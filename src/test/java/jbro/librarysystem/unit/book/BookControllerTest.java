@@ -70,4 +70,12 @@ public class BookControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("/books/bookDetail"));
     }
+
+    @Test
+    void getBookList() throws Exception {
+        mockMvc.perform(get("/books")
+                        .queryParam("keyword", "special"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("/books/bookList"));
+    }
 }
