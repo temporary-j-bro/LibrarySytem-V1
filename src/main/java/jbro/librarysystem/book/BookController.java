@@ -3,6 +3,9 @@ package jbro.librarysystem.book;
 import jbro.librarysystem.book.dto.BookDetail;
 import jbro.librarysystem.book.dto.BookPreviewInfo;
 import jbro.librarysystem.book.dto.BookRegisterForm;
+import jbro.librarysystem.infra.pagination.Page;
+import jbro.librarysystem.infra.pagination.Pageable;
+import jbro.librarysystem.infra.pagination.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -58,25 +61,17 @@ public class BookController {
     }
 
     @GetMapping
-    public String getList(@RequestParam(value = "page", defaultValue = "0") int page,
-                          @RequestParam(value = "size", defaultValue = "10") int size,
+    public String getList(@PageableDefault(size = 10) Pageable pageable,
                           @RequestParam String keyword,
                           Model model
     ) {
-        int offset = page * size;
-        List<Book> books = bookRepository.findByKeyword(keyword, offset, size);
+        Page<Book> bookPage = bookRepository.findByKeyword(keyword, pageable);
 
-        List<BookPreviewInfo> bookPreviewInfos = BookPreviewInfo.of(books);
+        List<BookPreviewInfo> bookPreviewInfos = BookPreviewInfo.of(bookPage.getContent());
         model.addAttribute("bookPreviewInfos", bookPreviewInfos);
 
-        model.addAttribute("currentPage", page);
+        model.addAttribute("bookPage", bookPage);
         model.addAttribute("keyword", keyword);
-
-        int totalResults = bookRepository.countByKeyword(keyword);
-        int totalPages = (int) Math.ceil((double) totalResults / size);
-        model.addAttribute("size", size);
-        model.addAttribute("totalPages", totalPages);
-
         return "/books/bookList";
     }
 }

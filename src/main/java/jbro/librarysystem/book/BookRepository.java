@@ -1,5 +1,8 @@
 package jbro.librarysystem.book;
 
+import jbro.librarysystem.infra.pagination.Page;
+import jbro.librarysystem.infra.pagination.PageImpl;
+import jbro.librarysystem.infra.pagination.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -43,6 +46,12 @@ public class BookRepository {
                 .skip(offset)
                 .limit(size)
                 .collect(Collectors.toList());
+    }
+
+    public Page<Book> findByKeyword(String keyword, Pageable pageable) {
+        List<Book> books = findByKeyword(keyword, pageable.getOffset(), pageable.getPageSize());
+
+        return new PageImpl<>(books, pageable, countByKeyword(keyword));
     }
 
     public int countByKeyword(String keyword) {
