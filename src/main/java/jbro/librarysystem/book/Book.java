@@ -15,6 +15,11 @@ public class Book {
         this.image = image;
     }
 
+    public boolean contains(String keyword) {
+        String lowerCaseKeyword = keyword.toLowerCase();
+        return this.title.toLowerCase().contains(lowerCaseKeyword) || this.author.toLowerCase().contains(lowerCaseKeyword);
+    }
+
     public Long getId() {
         return id;
     }
